@@ -1,13 +1,20 @@
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class QuizModel {
 
-    private String gameTitle = "Weiß etwas und gewinn!";
-    private List<String> playerNames;
-    private List<String> chosenCategories;
+    private int MAX_PLAYERS = 4;
+    private int MIN_PLAYERS = 2;
+    private int INITIAL_SCORE = 150;
+    private List<String> playerNames = new ArrayList<String>();
+    private List<Integer> playerScore = new ArrayList<Integer>();
+    private List<String> chosenCategories = new ArrayList<String>();
+    private List<String> possibleCategories = new ArrayList<String>();
 
-    private List<String> possibleCategories;
+    public QuizModel() {
+        fillPossibleCategories();
+    }
 
     private void fillPossibleCategories() {
         possibleCategories.add("Physik");
@@ -17,8 +24,10 @@ public class QuizModel {
         possibleCategories.add("Geschichte");
     }
 
-    public void startNewGame() {
-        fillPossibleCategories();
+    public void fillInitialScore() {
+        for(int i = 0;i < getAmountOfPlayers();i++) {
+            playerScore.add(INITIAL_SCORE);
+        }
     }
 
     public String[] getQuizGameRules() {
@@ -35,9 +44,8 @@ public class QuizModel {
         return QuizGameRules;
     }
 
-    public int setPlayerName(String newPlayerName) {
+    public void setPlayerName(String newPlayerName) {
         playerNames.add(newPlayerName);
-        return playerNames.size();
     }
 
     public String getPlayerName(int playerIndex) {
@@ -48,20 +56,35 @@ public class QuizModel {
         return playerNames.size();
     }
 
-    public String getGameTitle() {
-        return gameTitle;
+    public int getMAX_PLAYERS() {
+        return MAX_PLAYERS;
+    }
+
+    public int getMIN_PLAYERS() {
+        return MIN_PLAYERS;
     }
 
     public List<String> getPossibleCategories() {
         return possibleCategories;
     }
 
-    public int setChosenCategory(int categoryIndex) {
-        chosenCategories.add(possibleCategories.get(categoryIndex));
-        return chosenCategories.size();
+    public void setChosenCategory(int categoryIndex) {
+        chosenCategories.add(possibleCategories.remove(categoryIndex));
     }
 
-    public void radomizePlayerOrder() {
+    public List<String> getChosenCategories() {
+        return chosenCategories;
+    }
+
+    public List<String> getPlayerNames() {
+        return playerNames;
+    }
+
+    public List<Integer> getPlayerScore() {
+        return playerScore;
+    }
+
+    public void randomizePlayerOrder() {
         Collections.shuffle(playerNames);
     }
 }
