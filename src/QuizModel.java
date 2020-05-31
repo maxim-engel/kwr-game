@@ -4,13 +4,14 @@ import java.util.List;
 
 public class QuizModel {
 
-    private int MAX_PLAYERS = 4;
-    private int MIN_PLAYERS = 2;
-    private int INITIAL_SCORE = 150;
-    private List<String> playerNames = new ArrayList<String>();
-    private List<Integer> playerScore = new ArrayList<Integer>();
-    private List<String> chosenCategories = new ArrayList<String>();
-    private List<String> possibleCategories = new ArrayList<String>();
+    private final int MAX_PLAYERS = 4;
+    private final int MIN_PLAYERS = 2;
+    private final int INITIAL_SCORE = 150;
+    private String status = "player";
+    private List<String> playerNames = new ArrayList<>();
+    private List<Integer> playerScore = new ArrayList<>();
+    private List<String> chosenCategories = new ArrayList<>();
+    private List<String> possibleCategories = new ArrayList<>();
 
     public QuizModel() {
         fillPossibleCategories();
@@ -25,7 +26,7 @@ public class QuizModel {
     }
 
     public void fillInitialScore() {
-        for(int i = 0;i < getAmountOfPlayers();i++) {
+        for (int i = 0; i < getAmountOfPlayers(); i++) {
             playerScore.add(INITIAL_SCORE);
         }
     }
@@ -44,12 +45,41 @@ public class QuizModel {
         return QuizGameRules;
     }
 
-    public void setPlayerName(String newPlayerName) {
+    public void insertPlayerName(String newName) {
+        if (newName.equals("")) {
+            if (playerNames.size() < MIN_PLAYERS) {
+                status = "error";
+                return;
+            }
+
+            status = "category";
+            return;
+        }
+
+        setPlayerName(newName);
+
+        if (playerNames.size() >= MAX_PLAYERS) {
+            status = "category";
+        }
+    }
+
+    public void chooseCategory(int chosenIndex) {
+        setChosenCategory(chosenIndex - 1);
+        if (getChosenCategories().size() == getAmountOfPlayers()) {
+            status = "build";
+        }
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    private void setPlayerName(String newPlayerName) {
         playerNames.add(newPlayerName);
     }
 
     public String getPlayerName(int playerIndex) {
-        return playerNames.get(playerIndex);
+        return playerNames.get(playerIndex - 1);
     }
 
     public int getAmountOfPlayers() {
@@ -68,7 +98,7 @@ public class QuizModel {
         return possibleCategories;
     }
 
-    public void setChosenCategory(int categoryIndex) {
+    private void setChosenCategory(int categoryIndex) {
         chosenCategories.add(possibleCategories.remove(categoryIndex));
     }
 

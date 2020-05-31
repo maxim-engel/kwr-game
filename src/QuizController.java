@@ -1,5 +1,3 @@
-import java.io.IOException;
-
 public class QuizController {
 
     private QuizModel theModel;
@@ -10,49 +8,37 @@ public class QuizController {
         this.theView = theView;
     }
 
-    public void startGame() throws IOException {
+    public void startGame() {
 
         theView.showStartScreen();
         theView.showGameRules(theModel.getQuizGameRules());
-        insertPlayerNames();
-        chooseCategory();
+
+        theView.showInsertNameInstructions();
+        while (theModel.getStatus().equals("player")) {
+            theModel.insertPlayerName(theView.insertName());
+
+            if (theModel.getStatus().equals("error")) {
+                theView.showPlayerCapNotReached();
+                System.exit(0);
+            }
+
+            if (theModel.getStatus().equals("player") || theModel.getAmountOfPlayers() == 4) {
+                theView.showPlayerName(theModel.getAmountOfPlayers(), theModel.getPlayerName(theModel.getAmountOfPlayers()));
+            }
+        }
+
+        theView.showChooseCategoriesInstruction();
+        while (theModel.getStatus().equals("category")) {
+            theModel.chooseCategory(theView.showPossibleCategoriesAndChoose(theModel.getPossibleCategories(),
+                    theModel.getAmountOfPlayers() - theModel.getChosenCategories().size()));
+        }
+        theView.showChosenCategories(theModel.getChosenCategories());
+
         theView.showQuizIsBuilding();
         theModel.randomizePlayerOrder();
         theModel.fillInitialScore();
-        theView.showPlayerOrderWithPoints(theModel.getPlayerNames(),theModel.getPlayerScore());
+        theView.showPlayerOrderWithPoints(theModel.getPlayerNames(), theModel.getPlayerScore());
     }
 
-    private void insertPlayerNames() {
-        String newName;
-        theView.showInsertNameInstructions();
 
-        for (int i = 0; i < theModel.getMAX_PLAYERS(); i++) {
-            newName = theView.insertNames();
-
-            if (newName.equals("")) break;
-
-            theView.showPlayerName(i + 1, newName);
-            theModel.setPlayerName(newName);
-        }
-
-        if (theModel.getAmountOfPlayers() < theModel.getMIN_PLAYERS()) {
-            theView.showPlayerCapNotReached();
-            System.exit(0);
-        }
-    }
-
-    private void chooseCategory() {
-        int chosenIndex;
-        int amountOfCategories = theModel.getAmountOfPlayers();
-        theView.showChooseCategoriesInstruction();
-
-        while (amountOfCategories > 0) {
-            chosenIndex = theView.showPossibleCategoriesAndChoose(theModel.getPossibleCategories(), amountOfCategories);
-            theModel.setChosenCategory(chosenIndex - 1);
-            amountOfCategories--;
-        }
-
-        theView.showChosenCategories(theModel.getChosenCategories());
-
-    }
 }

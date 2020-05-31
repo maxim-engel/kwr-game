@@ -27,8 +27,8 @@ public class QuizView {
         System.out.println("Gebe die Spielernamen ein oder bestätige mit ENTER ohne Eingabe, um das Spiel zu starten!");
     }
 
-    public String insertNames() {
-        System.out.printf("Name Eingeben: ");
+    public String insertName() {
+        System.out.println("Name Eingeben: ");
         return scanner.nextLine();
     }
 
@@ -80,7 +80,7 @@ public class QuizView {
         System.out.printf("%nDrücke beliebige Taste, um %s...%n", reason);
         try {
             System.in.read();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 }
