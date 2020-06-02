@@ -21,7 +21,6 @@ public class QuizView {
         for (String rule : gameRules) {
             System.out.printf("%s%n", rule);
         }
-
         pressAnyKeyToContinue("fortzufahren");
     }
 
@@ -31,7 +30,6 @@ public class QuizView {
             System.out.println("Gebe die Spielernamen ein oder bestätige mit ENTER ohne Eingabe, um das Spiel zu starten!");
             playerNamesAlreadyExecuted = true;
         }
-
     }
 
     public String insertName() {
