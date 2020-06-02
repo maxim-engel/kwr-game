@@ -7,7 +7,7 @@ public class QuizModel {
     private final int MAX_PLAYERS = 4;
     private final int MIN_PLAYERS = 2;
     private final int INITIAL_SCORE = 150;
-    private String status = "player";
+    private String state = "init";
     private List<String> playerNames = new ArrayList<>();
     private List<Integer> playerScore = new ArrayList<>();
     private List<String> chosenCategories = new ArrayList<>();
@@ -25,10 +25,12 @@ public class QuizModel {
         possibleCategories.add("Geschichte");
     }
 
-    public void fillInitialScore() {
+    public void prepareGame() {
         for (int i = 0; i < getAmountOfPlayers(); i++) {
             playerScore.add(INITIAL_SCORE);
         }
+        Collections.shuffle(playerNames);
+        setState("play");
     }
 
     public String[] getQuizGameRules() {
@@ -42,40 +44,44 @@ public class QuizModel {
         QuizGameRules[6] = "7. Ein Spieler kann entweder eine neue Frage auswählen oder das Wort eines anderen Spielers korrigieren.";
         QuizGameRules[7] = "8. Nach Beendigung des Kreuzworträtsels endet das Spiel und der Spieler mit der höchsten Punktzahl gewinnt.";
 
+        setState("player");
         return QuizGameRules;
     }
 
     public void insertPlayerName(String newName) {
         if (newName.equals("")) {
             if (playerNames.size() < MIN_PLAYERS) {
-                status = "error";
-                return;
+                setState("error");
+            } else {
+                setState("category");
             }
-
-            status = "category";
             return;
         }
 
         setPlayerName(newName);
 
         if (playerNames.size() >= MAX_PLAYERS) {
-            status = "category";
+            setState("category");
         }
     }
 
     public void chooseCategory(int chosenIndex) {
         setChosenCategory(chosenIndex - 1);
         if (getChosenCategories().size() == getAmountOfPlayers()) {
-            status = "build";
+            setState("build");
         }
     }
 
-    public String getStatus() {
-        return status;
+    public String getState() {
+        return state;
+    }
+
+    private void setState(String newStatus) {
+        this.state = newStatus;
     }
 
     private void setPlayerName(String newPlayerName) {
-        playerNames.add(newPlayerName);
+        this.playerNames.add(newPlayerName);
     }
 
     public String getPlayerName(int playerIndex) {
@@ -99,7 +105,7 @@ public class QuizModel {
     }
 
     private void setChosenCategory(int categoryIndex) {
-        chosenCategories.add(possibleCategories.remove(categoryIndex));
+        this.chosenCategories.add(possibleCategories.remove(categoryIndex));
     }
 
     public List<String> getChosenCategories() {
@@ -112,9 +118,5 @@ public class QuizModel {
 
     public List<Integer> getPlayerScore() {
         return playerScore;
-    }
-
-    public void randomizePlayerOrder() {
-        Collections.shuffle(playerNames);
     }
 }

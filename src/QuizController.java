@@ -9,36 +9,53 @@ public class QuizController {
     }
 
     public void startGame() {
-
-        theView.showStartScreen();
-        theView.showGameRules(theModel.getQuizGameRules());
-
-        theView.showInsertNameInstructions();
-        while (theModel.getStatus().equals("player")) {
-            theModel.insertPlayerName(theView.insertName());
-
-            if (theModel.getStatus().equals("error")) {
-                theView.showPlayerCapNotReached();
-                System.exit(0);
-            }
-
-            if (theModel.getStatus().equals("player") || theModel.getAmountOfPlayers() == 4) {
-                theView.showPlayerName(theModel.getAmountOfPlayers(), theModel.getPlayerName(theModel.getAmountOfPlayers()));
+        while (!theModel.getState().equals("play")) {
+            switch (theModel.getState()) {
+                case "error":
+                    executeError();
+                    break;
+                case "init":
+                    executeInit();
+                    break;
+                case "player":
+                    executePlayer();
+                    break;
+                case "category":
+                    executeCategory();
+                    break;
+                case "build":
+                    executeBuild();
+                    break;
             }
         }
-
-        theView.showChooseCategoriesInstruction();
-        while (theModel.getStatus().equals("category")) {
-            theModel.chooseCategory(theView.showPossibleCategoriesAndChoose(theModel.getPossibleCategories(),
-                    theModel.getAmountOfPlayers() - theModel.getChosenCategories().size()));
-        }
-        theView.showChosenCategories(theModel.getChosenCategories());
-
-        theView.showQuizIsBuilding();
-        theModel.randomizePlayerOrder();
-        theModel.fillInitialScore();
-        theView.showPlayerOrderWithPoints(theModel.getPlayerNames(), theModel.getPlayerScore());
     }
 
+    private void executeInit() {
+        theView.showStartScreen();
+        theView.showGameRules(theModel.getQuizGameRules());
+    }
 
+    private void executeError() {
+        theView.showPlayerCapNotReached();
+        System.exit(0);
+    }
+
+    private void executePlayer() {
+        theView.showInsertNameInstructions();
+        theModel.insertPlayerName(theView.insertName());
+        theView.showPlayerName(theModel.getAmountOfPlayers(), theModel.getPlayerName(theModel.getAmountOfPlayers()));
+    }
+
+    private void executeCategory() {
+        theView.showChooseCategoriesInstruction();
+        theModel.chooseCategory(theView.showPossibleCategoriesAndChoose(theModel.getPossibleCategories(),
+                theModel.getAmountOfPlayers() - theModel.getChosenCategories().size()));
+    }
+
+    private void executeBuild() {
+        theView.showChosenCategories(theModel.getChosenCategories());
+        theView.showQuizIsBuilding();
+        theModel.prepareGame();
+        theView.showPlayerOrderWithPoints(theModel.getPlayerNames(), theModel.getPlayerScore());
+    }
 }

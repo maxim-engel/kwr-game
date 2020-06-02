@@ -4,6 +4,9 @@ import java.util.Scanner;
 public class QuizView {
 
     Scanner scanner = new Scanner(System.in);
+    private int NumberOfPlayers = 0;
+    private boolean playerNamesAlreadyExecuted = false;
+    private boolean categoryAlreadyExecuted = false;
 
     public void showStartScreen() {
         System.out.println("+---------------------------------+");
@@ -23,8 +26,12 @@ public class QuizView {
     }
 
     public void showInsertNameInstructions() {
-        System.out.println("SPIELER NAMEN:");
-        System.out.println("Gebe die Spielernamen ein oder bestätige mit ENTER ohne Eingabe, um das Spiel zu starten!");
+        if (!playerNamesAlreadyExecuted) {
+            System.out.println("SPIELER NAMEN:");
+            System.out.println("Gebe die Spielernamen ein oder bestätige mit ENTER ohne Eingabe, um das Spiel zu starten!");
+            playerNamesAlreadyExecuted = true;
+        }
+
     }
 
     public String insertName() {
@@ -33,8 +40,11 @@ public class QuizView {
     }
 
     public void showChooseCategoriesInstruction() {
-        System.out.println("WISSENKATEGORIE WÄHLEN:");
-        System.out.println("Entscheidet euch für die Kategorien, indem ihr die Ziffer vorgebt!");
+        if (!categoryAlreadyExecuted) {
+            System.out.println("WISSENKATEGORIE WÄHLEN:");
+            System.out.println("Entscheidet euch für die Kategorien, indem ihr die Ziffer vorgebt!");
+            categoryAlreadyExecuted = true;
+        }
     }
 
     public int showPossibleCategoriesAndChoose(List<String> categoryList, int amount) {
@@ -57,7 +67,11 @@ public class QuizView {
     }
 
     public void showPlayerName(int playerNumber, String playerName) {
+        if (NumberOfPlayers == playerNumber) {
+            return;
+        }
         System.out.printf("%d. Spieler: %s%n", playerNumber, playerName);
+        NumberOfPlayers = playerNumber;
     }
 
     public void showPlayerCapNotReached() {
